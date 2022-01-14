@@ -1,0 +1,239 @@
+﻿@model Tuple<WebHelpDeskApp.Models.Assignment, List<WebHelpDeskApp.Models.Comment>, WebHelpDeskApp.Models.TaskSubmission>
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<p>
+    @if (Model.Item1.Status == "Submitted")
+    {
+        <button type="button" style="float:right;margin-top:40px;" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#SubmissionModal">
+            Submit  Task Again
+        </button>
+    }
+    else
+    {
+        <button type="button" style="float:right;margin-top:40px;" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#SubmissionModal">
+            Submit this Task
+        </button>
+    }
+</p>
+
+<div class="row">
+    <h4>Task Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item1.Title)
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item1.Description)
+        </dd>
+        <dt class="col-sm-2">
+            Date & Time
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item1.Date)
+        </dd>
+        <dt class="col-sm-2">
+            Status
+        </dt>
+        <dd class="col-sm-10">
+            <span class="badge badge-info">@Html.DisplayFor(model => model.Item1.Status)</span>
+        </dd>
+
+        @*<dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Rate)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Rate)
+            </dd>*@
+        @*<dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Type)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Type)
+            </dd>*@
+        <dt class="col-sm-2">
+            Archived
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item1.IsArchived)
+        </dd>
+        <dt class="col-sm-2">
+            Service Requester
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item1.ApplicationUserServiceRequester.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            Assignee
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item1.ApplicationUserAssignee.FullName)
+        </dd>
+    </dl>
+</div>
+<hr />
+<form id="createcommentform" hidden>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="form-group">
+                <label class="control-label"><b>Comment</b></label>
+                <input id="Commenttext" placeholder="Add Comments Details here..." class="form-control" required />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <button type="submit" style="margin-top:30px;" onclick="SaveComment()" title="Save this Comment" class="btn btn-outline-success">Save Comment</button>
+            </div>
+        </div>
+    </div>
+</form>
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
+
+
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#SubmittedTasks">
+        See Task Submission
+    </button><div class="modal fade" id="SubmittedTasks" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Task Submission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (Model.Item3 != null)
+                    {
+                        <p>
+                            This task has been submitted by "@Model.Item1.ApplicationUserAssignee.FullName"
+                            with file name "@Model.Item3.SubmissionName" at Date Time (@Model.Item3.DateTime).
+                        </p>
+                        <img src="@Model.Item3.SubmissionFile" style="width:463px;height:200px;" />
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>All Comments</th>
+            <th></th>
+            <th style="text-align:right"><button onclick="CommentBoxShower()" class="btn btn-sm btn-outline-dark">Add Comments</button></th>
+        </tr>
+    </thead>
+    <tbody style="position:fixed;overflow-y:scroll;max-height:218px;width:1300px;">
+        @foreach (var item in Model.Item2)
+        {
+            <tr>
+                <td>@item.CommentDateTime</td>
+                <td>@item.CommentText</td>
+                <td>
+                    <span title="Comment added by @item.CommentReporter" class="badge badge-info">by @item.CommentReporter</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="SubmissionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Submit Taks</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label"><b>Choose File</b></label>
+                    <small class="form-text text-muted" style="float:right;">At this time we are only accepting Image Files.</small>
+                    <input type="file" class="form-control" value="" id="ImageRender" />
+                    <input style="display:none" type="text" class="form-control" value="" id="ImageRender1" />
+                </div>
+                <label class="control-label"><b>Image Preview</b></label>
+                <img id="ImagePreview" style="width:463px;height:200px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" onclick="SubmitTask()" class="btn btn-primary">Submit Task</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function CommentBoxShower() {
+        document.getElementById("createcommentform").hidden = false;
+    }
+
+    function SaveComment() {
+        $.ajax({
+            type: 'POST',
+            url: '/Assignments/CreateComment',
+            data: {
+                CommentText: $("#Commenttext").val(),
+                CommentAssignment: "@Model.Item1.AssignmentId"
+            },
+            success: function (result) {
+                //debugger
+                alert(result);
+                window.location.reload();
+            }
+        });
+    }
+
+    function SubmitTask() {
+        $.ajax({
+            type: 'POST',
+            url: '/Assignments/SubmitTask',
+            data: {
+                SubmissionName: document.getElementById("ImageRender").files[0].name,
+                SubmissionFile: document.getElementById("ImageRender1").value,
+                SubmissionAssignment: "@Model.Item1.AssignmentId"
+            },
+            success: function (result) {
+                //debugger
+                window.location.reload();
+                alert(result);
+            }
+        });
+    }
+
+
+    //For Sumbmitting Task with Image File
+    $("#ImageRender").on('change', function () {
+        readURL(this);
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var size = input.files[0].size;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                if (size <= 1048576) {
+                    $("#ImageRender1").val(e.target.result);
+                    document.getElementById("ImagePreview").src = e.target.result;
+                }
+                else {
+                    alert("Image size should be less than 1 MB!\notherwise your image will not be uploaded.");
+                    $("#ImageRender1").val("");
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

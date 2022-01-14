@@ -1,0 +1,86 @@
+﻿@model IEnumerable<WebHelpDeskApp.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Employees List";
+}
+@{ int i = 1;}
+<h1>Employees List</h1>
+
+<p>
+    <a href="/Identity/Account/EmployeeRegister" class="btn btn-primary">Add Employee</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sr. No</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone No.</th>
+            <th>D-O-B</th>
+            <th>Job</th>
+            <th>Salary</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@i</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Convert.ToDateTime(item.DateOfBirth).ToShortDateString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    <span class="badge badge-info">Employee</span>
+                </td>
+                @if (item.DepartmentID == null)
+                {
+                    <td>
+                        <span class="badge badge-success">None</span>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <span class="badge badge-success">@item.Department.DepartmentName</span>
+                    </td>
+                }
+            <td>
+                <a class="btn btn-sm btn-info" asp-action="UpdateEmployee" asp-route-id="@item.Id"><i class="fa fa-edit" title="Update Employee"></i></a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <button class="btn btn-sm btn-danger" onclick="DeleteUser('@item.Id')"><i class="fa fa-trash" title="Delete Employee"></i></button>
+                }
+            </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+
+<script>
+    function DeleteUser(id) {
+        if (confirm("Do you want to Delete this User?")) {
+            $.post("/Admin/DeleteUserbyAdmin", { userid : id }, function () {
+                alert("User has been deleted successfully!");
+            });
+        }
+    }
+</script>

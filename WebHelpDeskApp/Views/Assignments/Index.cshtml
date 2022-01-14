@@ -1,0 +1,209 @@
+﻿@model Tuple<List<WebHelpDeskApp.Models.Assignment>, List<WebHelpDeskApp.Models.Assignment>>
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<h1>Tasks List</h1>
+@if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Service Requester"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-outline-dark">Add New Task</a>
+    </p>
+}
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                data-bs-target="#home" type="button" role="tab" aria-controls="home"
+                aria-selected="true">
+            Active Tasks
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                data-bs-target="#profile" type="button" role="tab"
+                aria-controls="profile" aria-selected="false">
+            Archived Tasks
+        </button>
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Reporter
+                    </th>
+                    <th>
+                        Assignee
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @if (item.Status == "Open")
+                            {
+                                <span class="badge badge-info">Open</span>
+                            }
+                            @if (item.Status == "Close")
+                            {
+                                <span class="badge badge-danger">Close</span>
+                            }
+                            @if (item.Status == "Pending")
+                            {
+                                <span class="badge badge-secondary">Pending</span>
+                            }
+                            @if (item.Status == "Reject")
+                            {
+                                <span class="badge badge-dark">Reject</span>
+                            }
+                            @if (item.Status == "Submitted")
+                            {
+                                <span class="badge badge-success">Submitted</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUserServiceRequester.FullName)
+                        </td>
+                        <td>
+                            @if (item.AssigneeID != null)
+                            {
+                                @Html.DisplayFor(modelItem => item.ApplicationUserAssignee.FullName)
+                            }
+                            else
+                            {
+                                <p>none</p>
+                            }
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.AssignmentId" style="color:green">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.AssignmentId">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.AssignmentId" style="color:red">Delete</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@item.AssignmentId">See Details</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Status
+                    </th>                    
+                    <th>
+                        Reporter
+                    </th>
+                    <th>
+                        Assignee
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Item2)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @if (item.Status == "Open")
+                            {
+                                <span class="badge badge-info">Open</span>
+                            }
+                            @if (item.Status == "Close")
+                            {
+                                <span class="badge badge-danger">Close</span>
+                            }
+                            @if (item.Status == "Pending")
+                            {
+                                <span class="badge badge-secondary">Pending</span>
+                            }
+                            @if (item.Status == "Reject")
+                            {
+                                <span class="badge badge-dark">Reject</span>
+                            }
+                            @if (item.Status == "Submitted")
+                            {
+                                <span class="badge badge-success">Submitted</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUserServiceRequester.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApplicationUserAssignee.FullName)
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.AssignmentId" style="color:green">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.AssignmentId">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.AssignmentId" style="color:red">Delete</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@item.AssignmentId">See Details</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<WebHelpDeskApp.Models.Department>
+
+@{
+    ViewData["Title"] = "Departments List";
+}
+@{ 
+    int i = 1;
+}
+<h1>Departments List</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Department</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Sr. No
+            </th>
+            <th>
+                Department Name
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@i</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepartmentName)
+            </td>
+            <td>
+                <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.DepartmentId">Edit</a> 
+                <a class="btn btn-sm btn-warning" asp-action="Details" asp-route-id="@item.DepartmentId">Details</a> 
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.DepartmentId">Delete</a>
+            </td>
+        </tr>
+        i++;
+}
+    </tbody>
+</table>

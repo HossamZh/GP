@@ -1,0 +1,92 @@
+﻿@model WebHelpDeskApp.Models.Assignment
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<div class="row">
+    <div class="col-md-12" style="background-color: rgb(0 0 0 / 8%); border-radius: 10px;">
+        <h1>Tasks</h1>
+
+        <h4>Edit Tasks Details</h4>
+        <hr />
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input hidden asp-for="AssignmentId" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" placeholder="Title of Task" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"
+                          rows="4" placeholder="Describe your task details here..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Date" class="control-label">Date</label>
+                        <input type="date" asp-for="Date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select class="form-control" asp-for="Status">
+                            <option>Select Status</option>
+                            <option value="Open">Open</option>
+                            <option value="Close">Close</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Reject">Reject</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="AssigneeID" class="control-label">Assignee Employee</label>
+                        <select class="form-control" asp-items="ViewBag.Employees" asp-for="AssigneeID">
+                            <option value="">Select Employee</option>
+                        </select>
+                        <span asp-validation-for="AssigneeID" class="text-danger"></span>
+                    </div>
+                </div>
+                @*<div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="Rate" class="control-label"></label>
+                    <input asp-for="Rate" class="form-control" />
+                    <span asp-validation-for="Rate" class="text-danger"></span>
+                </div>
+            </div>*@
+            </div>
+
+            @*<div class="row">
+
+        </div>*@
+
+            <div class="form-group" hidden>
+                <label asp-for="ServiceRequesterID" class="control-label"></label>
+                <input asp-for="ServiceRequesterID" class="form-control" />
+                <span asp-validation-for="ServiceRequesterID" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsArchived" /> Is Archived
+                </label>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save Task" class="btn btn-success btn-block" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

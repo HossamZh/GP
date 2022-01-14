@@ -1,0 +1,108 @@
+﻿@model Tuple<List<ApplicationUser>, List<ApplicationUser>>
+@{
+    ViewData["Title"] = "All Users";
+}
+
+@{ int i = 1;}
+
+<h1>All Users List</h1>
+
+<h3>Managers</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sr. No</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone No.</th>
+            <th>D-O-B</th>
+            <th>Job</th>
+            <th>Salary</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Item1)
+        {
+            <tr>
+                <td>@i</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    <span class="badge badge-info">Managers</span>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-controller="Managers" asp-action="UpdateManager" asp-route-id="@item.Id">Update</a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+
+<h3>Employees</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sr. No</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone No.</th>
+            <th>D-O-B</th>
+            <th>Job</th>
+            <th>Salary</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Item2)
+        {
+            <tr>
+                <td>@i</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    <span class="badge badge-info">Employee</span>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-controller="Employees" asp-action="UpdateEmployee" asp-route-id="@item.Id">Update</a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>

@@ -1,0 +1,83 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@using WebHelpDeskApp.Data;
+@{
+    <link href="~/css/notificationArea.css" rel="stylesheet" />
+}
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var data = ViewBag.Context as ApplicationDbContext;
+        var notificationCount = new List<Notification>();
+        if (data != null)
+        {
+            notificationCount = data.Notifications.Where(a => a.Assignment_NotificationAssignment.ApplicationUserAssignee.Email == User.Identity.Name).ToList();
+        }
+        <li class="nav-item dropdown">
+            <a class="btn nav-link position-relative"
+               href="#" id="notifications" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell"></i>
+                @if (notificationCount?.Count() != 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @notificationCount?.Count()
+                    </span>
+                }
+            </a>
+            @if (notificationCount?.Count() != 0)
+            {
+                <ul class="dropdown-menu notifications" role="menu" aria-labelledby="notifications" style="margin-left:-23px;margin-top:10px;">
+                    <div class="notification-heading">
+                        <h5 class="menu-title">Notifications (@notificationCount?.Count())</h5>
+                    </div>
+                    <li class="divider"></li>
+                    @if (notificationCount != null)
+                    {
+                        foreach (var item in notificationCount?.ToList())
+                        {
+                            <div class="notifications-wrapper">
+                                <a class="content" href="/Assignments/Details?id=@item.NotificationAssignment&notificationId=@item.NotificationId">
+                                    <div class="notification-item">
+                                        <h4 class="item-title">@item.NotificationTitle</h4>
+                                        <span style="font-size:12px;"><i class="fa fa-calendar"></i> @item.DateTime</span>
+                                        <span style="float:right;font-size:12px;"><i class="fa fa-user"></i> Assigned to You.</span>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    }
+                </ul>
+            }
+        </li>
+
+        @*<li class="nav-item">
+                <a class="btn nav-link position-relative" title="Notifications">
+                    <i class="fa fa-bell"></i>
+                    @if (notificationCount.Count() != 0)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            @notificationCount
+                        </span>
+                    }
+                </a>
+            </li>*@
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-outline-secondary">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link btn-outline-secondary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn-outline-secondary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

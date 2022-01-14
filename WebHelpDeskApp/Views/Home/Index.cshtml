@@ -1,0 +1,324 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .card-counter {
+        box-shadow: 2px 2px 10px #DADADA;
+        margin: 5px;
+        padding: 20px 10px;
+        background-color: #fff;
+        height: 100px;
+        border-radius: 5px;
+        transition: .3s linear all;
+    }
+
+    .card-counter:hover {
+        box-shadow: 4px 4px 20px #DADADA;
+        transition: .3s linear all;
+    }
+
+    .card-counter.primary {
+        background-color: #007bff;
+        color: #FFF;
+    }
+
+    .card-counter.danger {
+        background-color: #ef5350;
+        color: #FFF;
+    }
+
+    .card-counter.success {
+        background-color: #66bb6a;
+        color: #FFF;
+    }
+
+    .card-counter.info {
+        background-color: #26c6da;
+        color: #FFF;
+    }
+
+    .card-counter i {
+        font-size: 5em;
+        opacity: 0.2;
+    }
+
+    .card-counter .count-numbers {
+        position: absolute;
+        right: 35px;
+        top: 20px;
+        font-size: 32px;
+        display: block;
+    }
+
+    .card-counter .count-name {
+        position: absolute;
+        right: 35px;
+        top: 65px;
+        text-transform: capitalize;
+        opacity: 0.8;
+        display: block;
+        font-size: 18px;
+    }
+</style>
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="display-4">Welcome to<br /> Web Help Desk <br />Website</h1>
+            </div>
+            <div class="col-md-5" style="padding:0px;">
+                <img src="~/images/webhelpdeskoutline.png" style="width:430px;height:320px;" />
+            </div>
+        </div>
+    </div>
+}
+else
+{
+<div>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="container">
+            <div class="row">
+                <span class="badge badge-danger">&bull; Admin Account</span>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card-counter primary">
+                        <i class="fas fa-user-tie"></i>
+                        <span class="count-numbers" id="managers"></span>
+                        <span class="count-name">Managers</span>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="card-counter danger">
+                        <i class="fas fa-users"></i>
+                        <span class="count-numbers" id="employees"></span>
+                        <span class="count-name">Employees</span>
+                    </div>
+                </div>
+
+                
+
+                <div class="col-md-2">
+                    <div class="card-counter info">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="tasks"></span>
+                        <span class="count-name">Total Tasks</span>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="card-counter info">
+                        <i class="fas fa-archive"></i>
+                        <span class="count-numbers" id="archivedtasks"></span>
+                        <span class="count-name">Archived Tasks</span>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card-counter info">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="todayTasks"></span>
+                        <span class="count-name">Today's Tasks</span>
+                    </div>
+                </div>
+            </div>
+            @* For showing Chart *@
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div id="container">
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (User.IsInRole("Manager"))
+    {
+        <div class="container">
+            <div class="row">
+                <span class="badge badge-danger">&bull; Manager Account</span>
+            </div>
+            <div class="row">  
+                <div class="col-md-3">
+                    <div class="card-counter danger">
+                        <i class="fas fa-users"></i>
+                        <span class="count-numbers" id="employees"></span>
+                        <span class="count-name">Employees</span>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card-counter info">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="tasks"></span>
+                        <span class="count-name">Total Tasks</span>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card-counter info">
+                        <i class="fas fa-archive"></i>
+                        <span class="count-numbers" id="archivedtasks"></span>
+                        <span class="count-name">Archived Tasks</span>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card-counter info">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="todayTasks"></span>
+                        <span class="count-name">Today's Tasks</span>
+                    </div>
+                </div>
+            </div>
+            @* For showing Chart *@
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div id="container">
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                </div>
+            </div>
+
+        </div>
+    }
+    else if (User.IsInRole("Employee"))
+    {
+        <div class="container">
+            <div class="row">
+                <span class="badge badge-info">&bull; Employee Account</span>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card-counter primary">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="mytotaltasks"></span>
+                        <span class="count-name">My Total Tasks</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-counter success">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="myopentasks"></span>
+                        <span class="count-name">My Open Tasks</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-counter danger">
+                        <i class="fas fa-tasks"></i>
+                        <span class="count-numbers" id="myclosetasks"></span>
+                        <span class="count-name">My Closed Tasks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+}
+
+
+<script>
+    $(document).ready(function () {
+        $.post("/Admin/AdminDashboardData", function (data) {
+            var realdata = data.split("::");
+            //debugger
+            if (realdata.length == 4) {
+                $("#employees").text(realdata[0]);
+                $("#tasks").text(realdata[1]);
+                $("#archivedtasks").text(realdata[2]);
+                $("#todayTasks").text(realdata[3]);
+            } else if (realdata.length == 3) {
+                $("#mytotaltasks").text(realdata[0]);
+                $("#myopentasks").text(realdata[1]);
+                $("#myclosetasks").text(realdata[2]);
+            } else {
+                $("#managers").text(realdata[0]);
+                $("#employees").text(realdata[1]);
+                $("#tasks").text(realdata[2]);
+                $("#archivedtasks").text(realdata[3]);
+                $("#todayTasks").text(realdata[4]);
+            }
+        });
+
+        $.post("/Admin/TasksChartData", function (data) {
+            var realdata = data.split("::");
+            //This is the pie chart 
+            Highcharts.chart('container', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: null,
+                    type: 'pie'
+                },
+                legend: {
+                    align: 'right',
+                    layout: 'vertical',
+                    verticalAlign: 'middle',
+                    labelFormatter: function () {
+                        return this.name + ' - ' + this.y;
+                    }
+                },
+                title: {
+                    text: null
+                },
+                tooltip: {
+                    useHTML: true,
+                    formatter: function () {
+                        return '<div>Status : ' + this.point.name + '</div><div style="text-align:center;">Count : ' + this.point.y + '</div>';
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: Highcharts.theme && Highcharts.theme.contrastTextColor || 'black'
+                            }
+                        },
+                        showInLegend: true
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    colorByPoint: true,
+                    allowPointSelect: true,
+
+                    data: [{
+                        name: 'Open',
+                        y: parseInt(realdata[0]),
+                        color: '#32AE47'
+                    }, {
+                        name: 'Close',
+                        y: parseInt(realdata[1]),
+                        color: '#DB4D4D'
+                    }, {
+                        name: 'Pending',
+                        y: parseInt(realdata[2])
+                    }, {
+                        name: 'Reject',
+                        y: parseInt(realdata[3])
+                    }]
+                }]
+            });
+        });
+    });
+</script>
